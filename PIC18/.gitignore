@@ -1,0 +1,10 @@
+*.hex
+*.pdf
+*.zip
+/build
+/backup
+/debug
+/doc/microchip_examples
+/dist
+/junk
+/html
