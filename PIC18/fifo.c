@@ -31,25 +31,21 @@
 
 #include <stdint.h>
 
-#define BUF_SIZE	0x0FF
-#define BUF_MASK	0x0FF
+uint8_t TxBuf[TXBUF_SIZE];
 
+uint8_t RxBuf[RXBUF_SIZE];
 
-unsigned char Buf[BUF_SIZE];
-int16_t	Head = 0;
-int16_t	Tail = 0;
-int16_t FreeSpace = 0;	
 
 //-----------------------------------------------------------------------------
 //	fifo_Init
 //-----------------------------------------------------------------------------
 //
 //=============================================================================
-void fifo_Init( void )
+void fifo_Init( FIFO_t * fifo, uint8_t * buf )
 {
 	//	The buffer is empty when the Head and Tail point to the same location.
-	Head = Tail = 0;
-	FreeSpace = BUF_SIZE;
+	fifo->head = fifo->tail = 0;
+    fifo->buf = buf;
 }
 
 //-----------------------------------------------------------------------------

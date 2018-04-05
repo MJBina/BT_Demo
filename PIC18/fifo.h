@@ -14,7 +14,33 @@ extern "C" {
 
 #include <stdint.h>
 
-extern void fifo_Init( void );
+
+//#define TXBUF_SIZE  1024    // bytes
+#define TXBUF_SIZE  2048    // bytes
+extern uint8_t RxBuf[];
+
+//#define RXBUF_SIZE  16      // bytes
+#define RXBUF_SIZE  128
+extern uint8_t TxBuf[];
+
+// rx / tx buffer empty
+#define IS_RXBUF_EMPTY()  (RxFifo.putIn == RxFifo.takeOut)
+#define IS_TXBUF_EMPTY()  (TxFifo.putIn == TxFifo.takeOut)
+
+// Circular buffer
+typedef struct
+{
+    uint8_t * buf;      // buffer
+    int16_t  head;      // index of next byte to add to the buffer
+    int16_t  tail;      // index of next byte to remove from the buffer
+} FIFO_t;
+
+// Circular serial buffers
+static FIFO_t    TxFifo; // transmit buffer
+static FIFO_t    RxFifo; // receive  buffer
+
+
+extern void fifo_Init( FIFO_t * fifo, uint8_t * buf );
 
 extern int8_t fifo_PutByte( uint8_t byte );
 
@@ -27,6 +53,11 @@ extern int16_t fifo_GetByte( uint8_t * byte );
 
 #endif	/* FIFO_H */
 
+
+//  EOF
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 #if 0
 
@@ -43,8 +74,8 @@ static uint8_t RxBuf[RXBUF_SIZE];
 #define IS_RXBUF_EMPTY()  (RxFifo.putIn == RxFifo.takeOut)
 #define IS_TXBUF_EMPTY()  (TxFifo.putIn == TxFifo.takeOut)
 
-// Circlular buffer
-#pragma pack(1)  // structure packing on byte alignement
+// Circular buffer
+#pragma pack(1)  // structure packing on byte alignment
 typedef struct
 {
     uint8_t* buf;       // buffer

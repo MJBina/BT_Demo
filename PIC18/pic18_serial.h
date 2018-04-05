@@ -23,15 +23,25 @@
 #include <stdint.h>
 #include <stdio.h>		//	for EOF
 
-//	#ifndef EOF
-//	#define	EOF	((int16_t)(-1))
-//	#endif	//	EOF
+#ifndef EOF
+  #define	EOF	((int16_t)(-1))
+#endif	//	EOF
 
+//  Interface functions - needed by PIC18 ISR Handler
+
+extern void serial_RxIsr(void);
+
+extern void serial_TxIsr(void);
+
+//  Initialization Functions 
+
+extern void _serial_HwConfig(void);
+
+extern void _serial_Init(void);
+
+
+// Application Interface functions
 extern int16_t _serial_getchar(void);
-
-extern void _serial_Config(void);
-
-extern void _serial_Start(void);
 
 extern int16_t _serial_TxBuf(unsigned char *data, int len);
 
@@ -41,9 +51,7 @@ extern int16_t _serial_putc(char ch);
 
 extern int16_t _serial_printf(char * fmt, ...);
 
-extern void serial_RxIsr(void);
 
-extern void serial_TxIsr(void);
 
 //	The following macros are implemented so that serial functions will only be 
 //	called if '__DEBUG' is defined. __DEBUG is defined if building the DEBUG 
