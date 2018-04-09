@@ -15,36 +15,38 @@ extern "C" {
 #include <stdint.h>
 
 
-//#define TXBUF_SIZE  1024    // bytes
-#define TXBUF_SIZE  2048    // bytes
-extern uint8_t RxBuf[];
+#define TXBUF_SIZE  ((int16_t)(2048))    	// bytes
+#define RXBUF_SIZE  ((int16_t)(128))
 
-//#define RXBUF_SIZE  16      // bytes
-#define RXBUF_SIZE  128
-extern uint8_t TxBuf[];
 
-// rx / tx buffer empty
-#define IS_RXBUF_EMPTY()  (RxFifo.putIn == RxFifo.takeOut)
-#define IS_TXBUF_EMPTY()  (TxFifo.putIn == TxFifo.takeOut)
+#ifdef FIFO_ALLOCATE_BUFFER_SPACE
+  //	allocate space for the buffers here.
+  uint8_t TxBuf[TXBUF_SIZE];
+  uint8_t RxBuf[RXBUF_SIZE];
+#else
+  extern uint8_t TxBuf[];
+  extern uint8_t RxBuf[];
+#endif 	
 
 // Circular buffer
 typedef struct
 {
     uint8_t * buf;      // buffer
     int16_t  head;      // index of next byte to add to the buffer
-    int16_t  tail;      // index of next byte to remove from the buffer
+    int16_t  tail;      // index of next location byte to remove from the buffer
+	int16_t  size;		// the size of the queue
 } FIFO_t;
 
-// Circular serial buffers
-static FIFO_t    TxFifo; // transmit buffer
-static FIFO_t    RxFifo; // receive  buffer
+// Circular buffers
+static FIFO_t TxFifo = { TxBuf, 0, 0, TXBUF_SIZE }; 
+static FIFO_t RxFifo = { RxBuf, 0, 0, RXBUF_SIZE };  
 
 
 extern void fifo_Init( FIFO_t * fifo, uint8_t * buf );
 
-extern int8_t fifo_PutByte( uint8_t byte );
+extern int8_t fifo_PutByte( uint8_t byte, FIFO_t * fifo );
 
-extern int16_t fifo_GetByte( uint8_t * byte );
+extern int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo );
 
 
 #ifdef	__cplusplus

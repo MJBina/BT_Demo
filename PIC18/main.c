@@ -358,7 +358,7 @@ void main(void)
     LED07_ON();
 
     _T2Config();
-    serial_Config();
+    serial_HwConfig();
 
     //	enable interrupts
     INTCONbits.PEIE = 1; //	Peripheral Interrupt Enable

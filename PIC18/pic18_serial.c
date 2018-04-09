@@ -63,11 +63,8 @@ void _serial_HwConfig(void)
     SPBRG1 = 8;
 }
 
-void _serial_Init(void)
+void _serial_Start(void)
 {
-    fifo_Init( &TxFifo, &TxBuf );
-    fifo_Init( &RxFifo, &RxBuf );
-    
     TXSTA1bits.TXEN = 1; // Enable transmitter hw
     RCSTA1bits.SPEN = 1; // Enable receiver hw
 }

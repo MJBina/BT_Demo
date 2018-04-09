@@ -1,40 +1,37 @@
-/* 
- * File:   fifo.c
- * Author: A1021170
- *
- * Created on April 4, 2018, 3:59 PM
- */
-
+//	Copyright Mark J. Bina, 2018 
+//
+// File:   fifo.c
+// Author: Mark J. Bina
 //-----------------------------------------------------------------------------
-//	Copyright(C) 2012 - Sensata Technologies, Inc.  All rights reserved.
 //
-//	$Workfile: fifo.c $	 
-//	$Author: a1021170 $	
-//	$Date: 2012-02-17 15:29:19-06:00 $
-//	$Revision: 2 $ 
+//	TODO: Understand how Git implements Keywords (below)
+//		$Workfile: $	 
+//		$Author: $	
+//		$Date: $
+//		$Revision: $ 
 //
-//	Project:
-//		RS232 Communications
-//
-//	Description:
-//		This code implements a FIFO buffer as a circular queue.  
-//		Data is serviced from the Head of the queue
-//		Data is added at the Tail of the queue
-//		The Tail is always left pointing to the next location to be filled.
-//		The buffer is empty when the Head and Tail point to the same location.
-//		The buffer is full when the Head is just behind the Tail 
+//	DESCRIPTION:
+//	This code implements a FIFO buffer as a circular queue.  
+//	Items are added to the queue at the 'tail' and removed from the 'head'.  
+//	This is analogous to waiting in line. You start at the end (tail) of the 
+//	line and receive some service at the head of the line.
 //	
+//	The head is the index of the next location to be written.
+//	The tail is the index of the next loaction to be read from.	
+//	The queue is empty (no data to be read) when the head and tail are equal.
+//	The buffer is full when the head is just behind the tail 
+//
+//	Powers of 2:
+//	When the buffer size is a power-of-2, calculations are much simpler and more
+//	reliable.
 //
 //=============================================================================
 
+#define FIFO_ALLOCATE_BUFFER_SPACE
 #include "fifo.h"
+#undef FIFO_ALLOCATE_BUFFER_SPACE
 
 #include <stdint.h>
-
-uint8_t TxBuf[TXBUF_SIZE];
-
-uint8_t RxBuf[RXBUF_SIZE];
-
 
 //-----------------------------------------------------------------------------
 //	fifo_Init
@@ -53,10 +50,28 @@ void fifo_Init( FIFO_t * fifo, uint8_t * buf )
 //-----------------------------------------------------------------------------
 //
 //=============================================================================
-static int16_t fifo_FreeSpace( void )
+
+int16_t _FreeSpace( FIFO_t * fifo )
 {
-	return( FreeSpace );
+//    if (IS_RXBUF_EMPTY()) return(RXBUF_SIZE-1);   // one less than full buffer
+    if ( fifo->tail > fifo->head )
+	{
+        return(fifo->size - fifo->tail + fifo->head - 1);
+	}
+	else
+	{
+		return( fifo->head - fifo->tail - 1);
+	}
 }
+
+static int16_t fifo_FreeSpace( FIFO_t * fifo )
+{
+	return( _FreeSpace(fifo) );
+}
+
+
+
+
 
 
 //-----------------------------------------------------------------------------
@@ -64,17 +79,16 @@ static int16_t fifo_FreeSpace( void )
 //-----------------------------------------------------------------------------
 //
 //=============================================================================
-int8_t fifo_PutByte( uint8_t byte )
+int8_t fifo_PutByte( uint8_t byte, FIFO_t * fifo )
 {
-	if (0 == FreeSpace)
+	if (0 == _FreeSpace(fifo))
 	{	
 		return ( 0 );
 	}
 	else
 	{
-		Buf[Tail++] = byte;
-		Tail &= BUF_MASK; 
-		FreeSpace--;
+		fifo->buf[fifo->tail++] = byte;
+		fifo->tail &= (fifo->size - 1); 
 		return( 1 );
 	}
 }
@@ -84,18 +98,19 @@ int8_t fifo_PutByte( uint8_t byte )
 //-----------------------------------------------------------------------------
 //
 //=============================================================================
-int16_t fifo_GetByte( uint8_t * byte )
+#define FIFO_DATA_AVAIL(fifo)   1
+
+int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo )
 {
-	if ( BUF_SIZE == FreeSpace )
+	if ( !FIFO_DATA_AVAIL(fifo) )
 	{
 		return( -1 );
 	}
 	else
 	{
-		*byte = Buf[Head++];
-		Head &= BUF_MASK;
-		FreeSpace++;
-		return( byte );
+		*byte = fifo->buf[fifo->head++];
+		fifo->head &= (fifo->size - 1);
+		return((int16_t)(*byte));
 	}
 }
 

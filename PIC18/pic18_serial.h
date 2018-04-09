@@ -37,7 +37,7 @@ extern void serial_TxIsr(void);
 
 extern void _serial_HwConfig(void);
 
-extern void _serial_Init(void);
+extern void _serial_Start(void);
 
 
 // Application Interface functions
@@ -70,6 +70,8 @@ extern int16_t _serial_printf(char * fmt, ...);
 #define serial_printf 	_serial_printf
 #define serial_getc()	_serial_getc()
 #define serial_putc(ch)	_serial_putc(ch)
+#define serial_HwConfig()   _serial_HwConfig()
+#define serial_Start()   _serial_Start()
 
 #else
 #define serial_Config()	
