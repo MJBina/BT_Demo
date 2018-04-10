@@ -352,7 +352,7 @@ void LedTicker(void)
     {
         LED06_OFF();
         LED07_OFF();
-        serial_putc('-');
+//        serial_putc('-');
     }
     else if (500 == led_tick)
     {
@@ -363,7 +363,7 @@ void LedTicker(void)
     {
         LED06_ON();
         LED07_ON();
-        serial_putc('+');
+//        serial_putc('+');
     }
     else if (led_tick >= 1000)
     {
