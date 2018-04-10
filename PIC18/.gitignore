@@ -6,5 +6,7 @@
 /debug
 /doc/microchip_examples
 /dist
-/junk
 /html
+/junk
+/nbproject/*.mk
+/nbproject/*.properties
