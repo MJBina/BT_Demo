@@ -20,7 +20,9 @@
 #include "fifo.h"
 #include "PIC18_serial.h"
 
+#include <stdarg.h>
 #include <stdint.h>
+#include <stdio.h>
 // #include <usart.h>
 #include <xc.h>
 
@@ -69,7 +71,7 @@ void _serial_Start(void)
     RCSTA1bits.SPEN = 1; // Enable receiver hw
 }
 
-int16_t _serial_TxBuf(unsigned char *data, int len)
+int16_t _serial_putbuf(unsigned char * data, int len)
 {
     do
     { // Transmit a byte
@@ -93,10 +95,45 @@ int16_t _serial_putc(char ch)
     TXREG1 = ch;
 }
 
-int16_t _serial_printf(char * fmt, ...)
+//-----------------------------------------------------------------------------
+//  _serial_printf()
+//
+//  Return Value
+//      On success, the total number of characters written is returned.
+//      On failure, a negative number is returned.
+//-----------------------------------------------------------------------------
+
+#ifndef _OMIT_PRINTF
+
+int16_t _serial_printf (const char * fmt, ...)
 {
-    return (EOF);
+    char buf[100];  // keep stack usage as small as possible
+    va_list args;
+	struct	__prbuf	pb;
+
+    int16_t len;
+
+    va_start (args, fmt);
+//    len = vsprintf(buf, fmt, args);
+//  vsprintf(char * wh, const char * f, va_list ap)
+    
+	pb.ptr = buf;
+	pb.func = (void (*)(char))NULL;
+	_doprnt(&pb, fmt, args);
+	*pb.ptr = 0;
+	len = pb.ptr - buf;
+    
+    if (len > 0)
+    {
+        if (0 != _serial_putbuf((unsigned char *)buf, len))
+            len = -1;
+    }
+    va_end (args);
+    return(len);
 }
+
+#endif  //  _OMIT_PRINTF
+
 
 void serial_RxIsr(void)
 {

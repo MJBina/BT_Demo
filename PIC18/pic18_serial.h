@@ -49,7 +49,7 @@ extern int16_t _serial_getc(void);
 
 extern int16_t _serial_putc(char ch);
 
-extern int16_t _serial_printf(char * fmt, ...);
+extern int16_t _serial_printf(const char * fmt, ...);
 
 
 

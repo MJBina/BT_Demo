@@ -32,14 +32,14 @@ extern "C" {
 typedef struct
 {
     uint8_t * buf;      // buffer
+	int16_t  size;		// the size of the queue
     int16_t  head;      // index of next byte to add to the buffer
     int16_t  tail;      // index of next location byte to remove from the buffer
-	int16_t  size;		// the size of the queue
 } FIFO_t;
 
 // Circular buffers
-static FIFO_t TxFifo = { TxBuf, 0, 0, TXBUF_SIZE }; 
-static FIFO_t RxFifo = { RxBuf, 0, 0, RXBUF_SIZE };  
+static FIFO_t TxFifo = { TxBuf, TXBUF_SIZE, 0, 0 }; 
+static FIFO_t RxFifo = { RxBuf, RXBUF_SIZE, 0, 0 };  
 
 
 extern void fifo_Init( FIFO_t * fifo, uint8_t * buf );

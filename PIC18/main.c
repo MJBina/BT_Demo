@@ -343,10 +343,41 @@ void low_priority interrupt low_isr(void)
 
 }
 
+void LedTicker(void)
+{
+    static int led_tick = 0;
+    
+    led_tick++;
+    if (250 == led_tick)
+    {
+        LED06_OFF();
+        LED07_OFF();
+        serial_putc('-');
+    }
+    else if (500 == led_tick)
+    {
+        LED06_ON();
+        LED07_OFF();
+    }
+    else if (750 == led_tick)
+    {
+        LED06_ON();
+        LED07_ON();
+        serial_putc('+');
+    }
+    else if (led_tick >= 1000)
+    {
+        LED06_OFF();
+        LED07_ON();
+        led_tick = 0;
+    }
+}
+
+extern void fifo_FreeSpaceTest(void);
+
 void main(void)
 {
     int tick = 0;
-    int led_tick = 0;
 
 
     INTCONbits.GIE = 0; //	disable interrupts
@@ -378,32 +409,10 @@ void main(void)
             {
                 // this loop runs approximately once per millisecond
                 tick = 0;
-                //				motor_test();
-                led_tick++;
-                if (250 == led_tick)
-                {
-                    LED06_OFF();
-                    LED07_OFF();
-                    serial_putc('-');
-                }
-                else if (500 == led_tick)
-                {
-                    LED06_ON();
-                    LED07_OFF();
-                }
-                else if (750 == led_tick)
-                {
-                    LED06_ON();
-                    LED07_ON();
-                    serial_putc('+');
-                }
-                else if (led_tick >= 1000)
-                {
-                    LED06_OFF();
-                    LED07_ON();
-                    led_tick = 0;
-                }
-            }
+                
+                LedTicker();
+                fifo_FreeSpaceTest();
+           }
         }
     }
 }
