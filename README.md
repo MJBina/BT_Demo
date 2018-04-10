@@ -1,4 +1,4 @@
-# BT_Demo
+BT_Demo
 This project was created to Demonstrate an interface between a Microcontroller and a PC using a BlueTooth/Serial connection.
 
 The goal is to explore the MVC (Model-View-Controller) Pattern for implementing an interface to a small microcontroller.
