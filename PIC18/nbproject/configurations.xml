@@ -19,6 +19,8 @@
       <itemPath>main.c</itemPath>
       <itemPath>pic18_serial.c</itemPath>
       <itemPath>pic18_serial.h</itemPath>
+      <itemPath>fifo.c</itemPath>
+      <itemPath>fifo.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

@@ -17,6 +17,7 @@
 //
 //=============================================================================
 
+#include "fifo.h"
 #include "PIC18_serial.h"
 
 #include <stdint.h>
@@ -24,16 +25,12 @@
 #include <xc.h>
 
 
-#ifndef EOF
-#define	EOF	((int16_t)(-1))
-#endif	//	EOF
-
 int16_t _serial_getchar(void)
 {
     return (EOF);
 }
 
-void _serial_Config(void)
+void _serial_HwConfig(void)
 {
     TXSTA1 = 0; // Reset USART registers to POR state
     RCSTA1 = 0;
@@ -68,8 +65,8 @@ void _serial_Config(void)
 
 void _serial_Start(void)
 {
-    TXSTA1bits.TXEN = 1; // Enable transmitter
-    RCSTA1bits.SPEN = 1; // Enable receiver
+    TXSTA1bits.TXEN = 1; // Enable transmitter hw
+    RCSTA1bits.SPEN = 1; // Enable receiver hw
 }
 
 int16_t _serial_TxBuf(unsigned char *data, int len)
@@ -88,6 +85,9 @@ int16_t _serial_getc(void)
     return (EOF);
 }
 
+//  RETURNS:
+//      _serial_putc returns the character written as an unsigned char cast to 
+//      an int16 or EOF (-1) on error.
 int16_t _serial_putc(char ch)
 {
     TXREG1 = ch;
