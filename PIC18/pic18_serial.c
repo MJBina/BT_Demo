@@ -140,17 +140,55 @@ void serial_RxIsr(void)
     char data;
 
 
-    if (RCSTA1bits.FERR) // If a framing error occured
+    if (RCSTA1bits.FERR) // If a framing error occurred
         //    USART1_Status.FRAME_ERROR = 1;    // Set the status bit
 
-        if (RCSTA1bits.OERR) // If an overrun error occured
+        if (RCSTA1bits.OERR) // If an overrun error occurred
             //    USART1_Status.OVERRUN_ERROR = 1;  // Set the status bit
 
             data = RCREG1; // Read data
 }
 
+//-----------------------------------------------------------------------------
+//                     T R A N S M I T     I N T E R R U P T
+//-----------------------------------------------------------------------------
+
 void serial_TxIsr(void)
 {
+    uint8_t tx_byte = 0;
+    
+    if(-1 != fifo_GetByte( &tx_byte, &TxFifo))
+    {
+        //  If there is data to transmit, then put it in the transmit buffer
+        while ((!TXSTA1bits.TRMT)); //	Check if USART is busy
+        TXREG1 = tx_byte; // 	Write the data byte to the USART
+    }
+    return;
 }
+
+
+void serial_TxTest(void)
+{
+    //  Put a message in the buffer
+//    fifo_PutByte('H', &TxFifo);
+    fifo_PutByte('e', &TxFifo);
+    fifo_PutByte('l', &TxFifo);
+    fifo_PutByte('l', &TxFifo);
+    fifo_PutByte('o', &TxFifo);
+    fifo_PutByte(' ', &TxFifo);
+    fifo_PutByte('W', &TxFifo);
+    fifo_PutByte('h', &TxFifo);
+    fifo_PutByte('i', &TxFifo);
+    fifo_PutByte('r', &TxFifo);
+    fifo_PutByte('l', &TxFifo);
+    fifo_PutByte('e', &TxFifo);
+    fifo_PutByte('d', &TxFifo);
+    fifo_PutByte('!', &TxFifo);
+    
+    //  start transmitting...
+//    TXREG1 = 'H';
+    
+}
+
 
 // EOF

@@ -276,6 +276,7 @@ void interrupt high_isr(void)
         //	1 = The EUSART1 transmit buffer, TXREG1, is empty (cleared when TXREG1 is written)
         //	0 = The EUSART1 transmit buffer is full
         serial_TxIsr();
+        PIR1bits.TX1IF = 0;
     }
 
     if (PIR1bits.SSP1IF)
@@ -287,8 +288,8 @@ void interrupt high_isr(void)
     }
 
     /* This code stub shows general interrupt handling.  Note that these
-    conditional statements are not handled within 3 seperate if blocks.
-    Do not use a seperate if block for each interrupt flag to avoid run
+    conditional statements are not handled within 3 separate if blocks.
+    Do not use a separate if block for each interrupt flag to avoid run
     time errors. */
 
 #if 0
@@ -375,6 +376,8 @@ void LedTicker(void)
 
 extern void fifo_FreeSpaceTest(void);
 
+extern void serial_TxTest(void);
+
 void main(void)
 {
     int tick = 0;
@@ -398,6 +401,8 @@ void main(void)
     _T2Start();
     serial_Start();
 
+    serial_TxTest();
+    
     while (1)
     {
         //	Timer2 is running at 5KHz.  T2TickCount increments at 200 uSec

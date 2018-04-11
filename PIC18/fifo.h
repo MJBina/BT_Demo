@@ -18,7 +18,6 @@ extern "C" {
 #define TXBUF_SIZE  ((int16_t)(2048))    	// bytes
 #define RXBUF_SIZE  ((int16_t)(128))
 
-
 #ifdef FIFO_ALLOCATE_BUFFER_SPACE
   //	allocate space for the buffers here.
   uint8_t TxBuf[TXBUF_SIZE];
@@ -41,12 +40,16 @@ typedef struct
 static FIFO_t TxFifo = { TxBuf, TXBUF_SIZE, 0, 1 }; 
 static FIFO_t RxFifo = { RxBuf, RXBUF_SIZE, 0, 1 };  
 
+extern int16_t  fifo_FreeSpace( FIFO_t * fifo );
 
-extern void fifo_Init( FIFO_t * fifo, uint8_t * buf );
+extern int16_t  fifo_GetByte( uint8_t * byte, FIFO_t * fifo );
 
-extern int8_t fifo_PutByte( uint8_t byte, FIFO_t * fifo );
+extern void     fifo_Init( FIFO_t * fifo, uint8_t * buf );
 
-extern int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo );
+extern int8_t   fifo_PutByte( uint8_t byte, FIFO_t * fifo );
+
+
+#define FIFO_DATA_AVAIL(fifo)   ((fifo_FreeSpace(fifo) == (fifo->size -1)) ? 0:1)
 
 
 #ifdef	__cplusplus

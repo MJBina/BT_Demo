@@ -74,7 +74,7 @@ void fifo_Init( FIFO_t * fifo, uint8_t * buf )
 //
 //=============================================================================
 
-static int16_t _FreeSpace( FIFO_t * fifo )
+int16_t  fifo_FreeSpace( FIFO_t * fifo )
 {
     return((fifo->head - fifo->tail - 1) & (fifo->size - 1));
 }
@@ -87,7 +87,7 @@ static int16_t _FreeSpace( FIFO_t * fifo )
 
 int8_t fifo_PutByte( uint8_t byte, FIFO_t * fifo )
 {
-	if (0 == _FreeSpace(fifo))
+	if (0 == fifo_FreeSpace(fifo))
 	{	
 		return ( 0 );
 	}
@@ -105,8 +105,6 @@ int8_t fifo_PutByte( uint8_t byte, FIFO_t * fifo )
 //-----------------------------------------------------------------------------
 //
 //=============================================================================
-
-#define FIFO_DATA_AVAIL(fifo)   ((_FreeSpace(fifo) == (fifo->size -1)) ? 0:1)
 
 int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo )
 {
