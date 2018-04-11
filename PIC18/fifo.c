@@ -18,28 +18,28 @@
 //	
 //	The head is the index of the next location to be written.
 //	The tail is the index of the next location to be read from.	
-//	The buffer is full when the head and tail are equal.
-//	The queue is empty (no data to be read) when the head is just behind the tail 
+//	The buffer is empty when the head and tail are equal.
+//	The buffer is full when the head is just behind the tail 
 //
 //  Example (size=8) Normal (tail>head):
 //    tail    head    used    free
-//      1       0       0       7 empty
-//      2       0       1       6
-//      3       0       2       5
-//      4       0       3       4
-//      5       0       4       3
-//      6       0       5       2
-//      7       0       6       1
-//      0       0       7       0 full
-//  Example contd' Wrapped (head>tail):
-//      0       7       0       7 empty
-//      0       6       1       6
-//      0       5       2       5
-//      0       4       3       4
-//      0       3       4       3
-//      0       2       5       2
-//      0       1       6       1
-//      0       0       7       0 full
+//      0       0       0       7 empty
+//      1       0       1       6
+//      2       0       2       5
+//      3       0       3       4
+//      4       0       4       3
+//      5       0       5       2
+//      6       0       6       1
+//      7       0       7       0 full
+//  Example cont'd  Wrapped (head>tail):
+//      0       7       7       0 full
+//      0       6       6       1
+//      0       5       5       2
+//      0       4       4       3
+//      0       3       3       4
+//      0       2       2       5
+//      0       1       1       6
+//      0       0       0       7 empty
 //
 //	Powers of 2:
 //	When the buffer size is a power-of-2, calculations are much simpler and more
@@ -62,8 +62,8 @@
 //=============================================================================
 void fifo_Init( FIFO_t * fifo, uint8_t * buf )
 {
-	//	The buffer is empty when the Head and Tail point to the same location.
-	fifo->head = fifo->tail = 0;
+    fifo->tail = 0;
+	fifo->head = fifo->tail + 1;
     fifo->buf = buf;
 }
 
@@ -132,7 +132,7 @@ int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo )
 }
 
 
-#if 0
+#if 1
 
 #include "pic18_serial.h"
 
@@ -152,35 +152,73 @@ void fifo_FreeSpaceTest(void)
     switch (state)
     {
     case 0: //  initial, empty
-        serial_printf("\r\n%02d:xx  h:%d, t:%d, free:%d ", state, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
+        serial_printf("\r\n EMPTY when head is just behind tail.");
+        serial_printf("\r\n FULL when head == tail.");
+        
+        serial_printf("\r\n%02d:EMPTY ", state);
+        serial_printf( " h:%d, t:%d,  size:%d, free:%d ", testFifo.head, testFifo.tail, testFifo.size,_FreeSpace(&testFifo));
         state++;
         break;
         
-    case 1: //  Normal, add one-byte at a time until buffer is full
+    case 1: //  Normal, add one-byte at a time until buffer is FULL
+    case 3: //  Wrapped, add one-byte at a time until buffer is FULL
         result = fifo_PutByte( (uint8_t)0x55, &testFifo);
-        serial_printf("\r\n%02d:%02X  h:%d, t:%d, free:%d ", state, result, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
         if (result == 0)
+        {
+            serial_printf("\r\n%02d:FULL (%s)", state, (3==state)?"wrapped":"normal");
             state++;
+        }
+        else 
+        {
+            serial_printf("\r\n%02d: ", state );
+        }
+        serial_printf(" %02X  h:%d, t:%d, free:%d ", result, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
         break;
         
-    case 2: //  get one-byte, one
-    case 3: //  get one-byte, two
-    case 4: //  get one-byte, three
-    case 5: //  get one-byte, four
+    case 2:     //  Normal, get one-byte at a time until buffer is EMPTY
+    case 11:    //  Wrapped, get one-byte at a time until buffer is EMPTY
+        result = fifo_GetByte( &byte, &testFifo);
+        if (result == -1)
+        {
+            serial_printf("\r\n%02d:EMPTY", state );
+            state++;
+        }
+        else 
+        {
+            serial_printf("\r\n%02d:", state );
+        }
+        serial_printf(" %02X  h:%d, t:%d, free:%d ", result, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
+        break;
+        
+        
+    case 4: //  get one-byte, one
+    case 5: //  get one-byte, two
+    case 6: //  get one-byte, three
+    case 7: //  get one-byte, four
+    case 8: //  get one-byte, five
+    case 9: //  get one-byte, six
         result = fifo_GetByte( &byte, &testFifo);
         serial_printf("\r\n%02d:%02X  h:%d, t:%d, free:%d ", state, result, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
-        if (result == -1)
-            state++;
+        state++;
         break;
    
-    case 6: //  Wrapped, add one-byte at a time until buffer is full
+    case 10: //  Wrapped, add one-byte at a time until buffer is FULL
+            //  Should only need to do this for as many bytes as were removed in prior states.
         result = fifo_PutByte( (uint8_t)0xAA, &testFifo);
-        serial_printf("\r\n%02d:%02X  h:%d, t:%d, free:%d ", state, result, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
         if (result == 0)
+        {
+            serial_printf("\r\n%02d:FULL (wrapped)", state);
             state++;
+        }
+        else 
+        {
+            serial_printf("\r\n%02d:", state );
+        }
+        serial_printf(" %02X  h:%d, t:%d, free:%d ", result, testFifo.head, testFifo.tail, _FreeSpace(&testFifo));
         break;
+            
         
-    case 7: //  Test Complete
+    case 12: //  Test Complete
         serial_printf("\r\nTest Complete");
         state++;
         break;

@@ -38,8 +38,8 @@ typedef struct
 } FIFO_t;
 
 // Circular buffers
-static FIFO_t TxFifo = { TxBuf, TXBUF_SIZE, 0, 0 }; 
-static FIFO_t RxFifo = { RxBuf, RXBUF_SIZE, 0, 0 };  
+static FIFO_t TxFifo = { TxBuf, TXBUF_SIZE, 0, 1 }; 
+static FIFO_t RxFifo = { RxBuf, RXBUF_SIZE, 0, 1 };  
 
 
 extern void fifo_Init( FIFO_t * fifo, uint8_t * buf );

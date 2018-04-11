@@ -21,6 +21,7 @@
       <itemPath>pic18_serial.h</itemPath>
       <itemPath>fifo.c</itemPath>
       <itemPath>fifo.h</itemPath>
+      <itemPath>doprnt.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -30,6 +31,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>
+    <Elem>../../../../../../Program Files (x86)/Microchip/xc8/v1.45/sources/common</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
