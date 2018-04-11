@@ -76,17 +76,8 @@ void fifo_Init( FIFO_t * fifo, uint8_t * buf )
 
 static int16_t _FreeSpace( FIFO_t * fifo )
 {
-
-    if ( fifo->tail >= fifo->head )     //  Normal
-	{
-        return((fifo->size - 1) - (fifo->tail - fifo->head));
-	}
-	else    //  Wrapped
-	{
-		return( fifo->head - fifo->tail - 1);
-	}
+    return((fifo->head - fifo->tail - 1) & (fifo->size - 1));
 }
-
 
 //-----------------------------------------------------------------------------
 //	fifo_PutByte
@@ -132,7 +123,7 @@ int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo )
 }
 
 
-#if 1
+#if 0
 
 #include "pic18_serial.h"
 
