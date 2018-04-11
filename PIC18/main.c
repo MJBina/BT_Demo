@@ -411,8 +411,7 @@ void main(void)
                 tick = 0;
                 
                 LedTicker();
-                fifo_FreeSpaceTest();
-           }
+            }
         }
     }
 }
