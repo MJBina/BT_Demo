@@ -31,10 +31,10 @@ extern "C" {
 // Circular buffer
 typedef struct
 {
-    uint8_t * buf;      // buffer
-	int16_t  size;		// the size of the queue
-    int16_t  head;      // index of next byte to add to the buffer
-    int16_t  tail;      // index of next location byte to remove from the buffer
+    uint8_t * buf;      //  buffer
+	int16_t  size;		//  the size of the queue
+    int16_t  head;      //  index of next byte to add to the buffer
+    int16_t  tail;      //  index of next location byte to remove from the buffer
 } FIFO_t;
 
 // Circular buffers
