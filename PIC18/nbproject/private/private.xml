@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/A1021170/Projects/sandbox/BT_Demo/PIC18/doprnt.c</file>
             <file>file:/C:/Users/A1021170/Projects/sandbox/BT_Demo/PIC18/fifo.c</file>
             <file>file:/C:/Users/A1021170/Projects/sandbox/BT_Demo/PIC18/pic18_serial.c</file>
+            <file>file:/C:/Users/A1021170/Projects/sandbox/BT_Demo/PIC18/doprnt.c</file>
+            <file>file:/C:/Users/A1021170/Projects/sandbox/BT_Demo/PIC18/fifo.h</file>
         </group>
     </open-files>
 </project-private>
