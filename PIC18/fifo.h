@@ -48,8 +48,7 @@ extern void     fifo_Init( FIFO_t * fifo, uint8_t * buf );
 
 extern int8_t   fifo_PutByte( uint8_t byte, FIFO_t * fifo );
 
-
-#define FIFO_DATA_AVAIL(fifo)   ((fifo_FreeSpace(fifo) == (fifo->size -1)) ? 0:1)
+extern inline int8_t fifo_DataAvailable( FIFO_t * fifo );
 
 
 #ifdef	__cplusplus

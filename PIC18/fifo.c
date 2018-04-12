@@ -106,9 +106,15 @@ int8_t fifo_PutByte( uint8_t byte, FIFO_t * fifo )
 //
 //=============================================================================
 
+inline int8_t fifo_DataAvailable( FIFO_t * fifo )
+{
+    return((fifo_FreeSpace(fifo) == (fifo->size -1)) ? 0:1 );
+}
+
+
 int16_t fifo_GetByte( uint8_t * byte, FIFO_t * fifo )
 {
-	if ( !FIFO_DATA_AVAIL(fifo) )
+	if ( !fifo_DataAvailable(fifo) )
 	{
 		return( -1 );
 	}

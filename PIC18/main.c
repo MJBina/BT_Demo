@@ -9,11 +9,11 @@
 //	Project:	
 //
 //	Description:
-//		COMPILER  	: MPLAB® C18 C Compiler, v3.10, 16 February 2007
-//					: Part Number: SW006011
+//		COMPILER  	: MPLAB® XC Compiler, v1.45
 // 		PROCESSOR 	: PIC18F46K22 44-pin TQFP
 // 		CLOCK     	: Internal 
-//
+//      PROCESSOR HEADER:
+//          C:\Program Files (x86)\Microchip\xc8\v1.45\include\pic18f46k22.h
 //
 //	TODO:
 //
@@ -261,38 +261,39 @@ void interrupt high_isr(void)
         PIR1bits.TMR2IF = 0;
         T2TickCount++;
     }
-
-    if (PIR1bits.RC1IF)
+    else if (PIR1bits.RC1IF)
     {
         //	RC1IF: EUSART1 Receive Interrupt Flag bit
         //	1 = The EUSART1 receive buffer, RCREG1, is full (cleared when RCREG1 is read)
         //	0 = The EUSART1 receive buffer is empty
         serial_RxIsr();
     }
-
-    if (PIR1bits.TX1IF)
+    else if (PIR1bits.TX1IF)
     {
         //	TX1IF: EUSART1 Transmit Interrupt Flag bit
         //	1 = The EUSART1 transmit buffer, TXREG1, is empty (cleared when TXREG1 is written)
         //	0 = The EUSART1 transmit buffer is full
+        LED06_ON();
         serial_TxIsr();
-        PIR1bits.TX1IF = 0;
+        LED06_OFF();
     }
-
-    if (PIR1bits.SSP1IF)
+    else if (PIR1bits.SSP1IF)
     {
         //	SSP1IF: Master Synchronous Serial Port 1 Interrupt Flag bit
         //	1 = The transmission/reception is complete (must be cleared by software)
         //	0 = Waiting to transmit/receive
-        PIR1bits.SSP1IF = 0;
+        LED07_ON();
+        LED07_OFF();
     }
 
-    /* This code stub shows general interrupt handling.  Note that these
-    conditional statements are not handled within 3 separate if blocks.
-    Do not use a separate if block for each interrupt flag to avoid run
-    time errors. */
-
 #if 0
+    // ************************************************************************
+    //  This code stub shows general interrupt handling.  Note that these
+    //  conditional statements are not handled within 3 separate if blocks.
+    //
+    //  DO NOT USE A SEPARATE IF BLOCK FOR EACH INTERRUPT FLAG TO AVOID RUN-
+    //  TIME ERRORS.
+    // ************************************************************************
 
     /* TODO Add High Priority interrupt routine code here. */
 
@@ -401,6 +402,9 @@ void main(void)
     _T2Start();
     serial_Start();
 
+    LED06_OFF();
+    LED07_OFF();
+
     serial_TxTest();
     
     while (1)
@@ -415,7 +419,7 @@ void main(void)
                 // this loop runs approximately once per millisecond
                 tick = 0;
                 
-                LedTicker();
+//                LedTicker();
             }
         }
     }
