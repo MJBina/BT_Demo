@@ -1,3 +1,6 @@
+# Ignore these specific files
+private.xml
+
 # Ignore files with these extensions
 *.hex
 *.pdf
