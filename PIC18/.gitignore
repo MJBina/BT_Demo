@@ -1,12 +1,17 @@
+# Ignore files with these extensions
 *.hex
 *.pdf
 *.zip
-/build
-/backup
-/debug
-/doc/microchip_examples
-/dist
-/html
-/junk
-/nbproject/*.mk
-/nbproject/*.properties
+
+# Ignore these folders:
+build/
+backup/
+debug/
+doc/microchip_examples/
+dist/
+html/
+junk/
+
+# Ignore specific file extensions in the specified folders
+nbproject/*.mk
+nbproject/*.properties
