@@ -99,12 +99,15 @@
 //-----------------------------------------------------------------------------
 //	_HwConfig()
 //-----------------------------------------------------------------------------
-//	Hardware Configuration for the roboMech board
+//	Hardware Configuration for the PICkit(tm) 44-Pin Demo Board (DM164130-4)
+//      
+//  PIC18(L)F2X/4XK22 important pin assignments:
 //
-//		CCP1/RC2, pin-36 - PWM1 output
-//		CCP2/RB3, pin-11 - PWM2 output
-//		CCP3/RB5, pin-15 - PWM3 output
-//		CCP4/RD1, pin-39 - PWM4 output
+//		RC7/RX1/DT1  pin-1  -  input
+//		RC6,TX1/CK1  pin-44 -  output
+//
+//		RD6,TX2/CK2  pin-4  -  output
+//		RD7,RX2/DT1  pin-5  -  input
 //
 //=============================================================================
 
